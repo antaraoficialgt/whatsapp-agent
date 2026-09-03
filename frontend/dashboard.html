@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - WhatsApp Agent</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app">
+        <!-- NAVBAR -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <h1>WhatsApp Agent Dashboard</h1>
+                <div class="nav-right">
+                    <div class="user-info">
+                        <span id="user-name">Usuario</span>
+                        <span id="plan-badge" class="badge badge-free">Free</span>
+                    </div>
+                    <button onclick="logout()" class="btn btn-small">Cerrar Sesión</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <!-- SIDEBAR -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3>Menú</h3>
+                    <ul class="nav-menu">
+                        <li><a href="#" onclick="showPage('customers')" class="active">Mis Negocios</a></li>
+                        <li><a href="#" onclick="showPage('subscription')">Mi Suscripción</a></li>
+                        <li><a href="#" onclick="showPage('settings')">Configuración</a></li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3>Planes</h3>
+                    <div class="plan-info">
+                        <p><strong>Free:</strong> 1 negocio</p>
+                        <p><strong>Pro:</strong> 5 negocios</p>
+                        <p><strong>Enterprise:</strong> Ilimitados</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <main class="main-content">
+                <!-- CUSTOMERS PAGE -->
+                <section id="customers-page" class="page active">
+                    <div class="page-header">
+                        <h2>Mis Negocios</h2>
+                        <button onclick="showAddCustomer()" class="btn btn-primary">+ Agregar Negocio</button>
+                    </div>
+
+                    <div id="customers-list" class="customers-grid">
+                        <p class="loading">Cargando negocios...</p>
+                    </div>
+
+                    <!-- ADD CUSTOMER MODAL -->
+                    <div id="add-customer-modal" class="modal" style="display: none;">
+                        <div class="modal-content">
+                            <h2>Agregar Nuevo Negocio</h2>
+                            <form onsubmit="handleAddCustomer(event)">
+                                <div class="form-group">
+                                    <label>Nombre del Negocio</label>
+                                    <input type="text" id="customer-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone Number ID (Meta)</label>
+                                    <input type="text" id="customer-phone-id" required placeholder="1234567890123">
+                                </div>
+                                <div class="form-group">
+                                    <label>Access Token (Meta)</label>
+                                    <input type="password" id="customer-token" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>System Prompt (opcional)</label>
+                                    <textarea id="customer-prompt" rows="4" placeholder="Eres un asistente amable..."></textarea>
+                                </div>
+                                <div class="modal-buttons">
+                                    <button type="submit" class="btn btn-primary">Crear Negocio</button>
+                                    <button type="button" onclick="hideAddCustomer()" class="btn btn-secondary">Cancelar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SUBSCRIPTION PAGE -->
+                <section id="subscription-page" class="page">
+                    <div class="page-header">
+                        <h2>Mi Suscripción</h2>
+                    </div>
+
+                    <div class="subscription-container">
+                        <div id="subscription-info" class="card">
+                            <h3>Plan Actual</h3>
+                            <p id="current-plan">Cargando...</p>
+                            <p id="plan-features"></p>
+                        </div>
+
+                        <div class="plans-grid">
+                            <div class="plan-card" id="plan-free">
+                                <h3>Free</h3>
+                                <p class="price">$0/mes</p>
+                                <ul>
+                                    <li>1 Negocio</li>
+                                    <li>100 mensajes/día</li>
+                                    <li>Dashboard Básico</li>
+                                    <li>7 días historial</li>
+                                </ul>
+                                <button onclick="upgradePlan('free')" class="btn btn-small">Tu Plan Actual</button>
+                            </div>
+
+                            <div class="plan-card" id="plan-pro">
+                                <h3>Pro</h3>
+                                <p class="price">$29/mes</p>
+                                <ul>
+                                    <li>5 Negocios</li>
+                                    <li>10,000 mensajes/día</li>
+                                    <li>Dashboard Avanzado</li>
+                                    <li>Historial Ilimitado</li>
+                                    <li>Prompts Personalizados</li>
+                                    <li>Soporte Email</li>
+                                </ul>
+                                <button onclick="upgradePlan('pro')" class="btn btn-primary">Actualizar</button>
+                            </div>
+
+                            <div class="plan-card" id="plan-enterprise">
+                                <h3>Enterprise</h3>
+                                <p class="price">Personalizado</p>
+                                <ul>
+                                    <li>Negocios Ilimitados</li>
+                                    <li>Mensajes Ilimitados</li>
+                                    <li>Todo en Pro</li>
+                                    <li>API Avanzada</li>
+                                    <li>Webhooks Personalizados</li>
+                                    <li>Soporte Prioritario</li>
+                                </ul>
+                                <button onclick="contactSales()" class="btn btn-small">Contactar Ventas</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SETTINGS PAGE -->
+                <section id="settings-page" class="page">
+                    <div class="page-header">
+                        <h2>Configuración</h2>
+                    </div>
+
+                    <div class="settings-container">
+                        <div class="card">
+                            <h3>Información de Cuenta</h3>
+                            <p><strong>Email:</strong> <span id="settings-email">-</span></p>
+                            <p><strong>Nombre:</strong> <span id="settings-name">-</span></p>
+                        </div>
+
+                        <div class="card">
+                            <h3>Peligro</h3>
+                            <p>Eliminar cuenta</p>
+                            <button onclick="deleteAccount()" class="btn btn-danger">Eliminar Mi Cuenta</button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
